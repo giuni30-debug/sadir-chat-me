@@ -26,7 +26,7 @@ workflows:
         script: npx cap sync android
       - name: Apply SAFIR launcher icon everywhere
         script: |
-          ICON="$CM_BUILD_DIR/public/safir-chat-icon.jpg"
+          ICON="$CM_BUILD_DIR/public/safir-chat-icon.png"
           test -s "$ICON"
           rm -rf android/app/src/main/res/mipmap-anydpi-v26
           for spec in "mdpi 48" "hdpi 72" "xhdpi 96" "xxhdpi 144" "xxxhdpi 192"; do
