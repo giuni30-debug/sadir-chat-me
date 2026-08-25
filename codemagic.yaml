@@ -24,21 +24,21 @@ workflows:
           fi
       - name: Sync Android
         script: npx cap sync android
-      - name: Apply original SAFIR launcher icon
+      - name: Apply SAFIR launcher icon everywhere
         script: |
           ICON="$CM_BUILD_DIR/public/safir-chat-icon.jpg"
           test -s "$ICON"
-          mkdir -p android/app/src/main/res/mipmap-mdpi android/app/src/main/res/mipmap-hdpi android/app/src/main/res/mipmap-xhdpi android/app/src/main/res/mipmap-xxhdpi android/app/src/main/res/mipmap-xxxhdpi
-          sips -s format png -z 48 48 "$ICON" --out android/app/src/main/res/mipmap-mdpi/ic_launcher.png >/dev/null
-          cp android/app/src/main/res/mipmap-mdpi/ic_launcher.png android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
-          sips -s format png -z 72 72 "$ICON" --out android/app/src/main/res/mipmap-hdpi/ic_launcher.png >/dev/null
-          cp android/app/src/main/res/mipmap-hdpi/ic_launcher.png android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
-          sips -s format png -z 96 96 "$ICON" --out android/app/src/main/res/mipmap-xhdpi/ic_launcher.png >/dev/null
-          cp android/app/src/main/res/mipmap-xhdpi/ic_launcher.png android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
-          sips -s format png -z 144 144 "$ICON" --out android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png >/dev/null
-          cp android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
-          sips -s format png -z 192 192 "$ICON" --out android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png >/dev/null
-          cp android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+          rm -rf android/app/src/main/res/mipmap-anydpi-v26
+          for spec in "mdpi 48" "hdpi 72" "xhdpi 96" "xxhdpi 144" "xxxhdpi 192"; do
+            set -- $spec
+            DENSITY=$1
+            SIZE=$2
+            DIR="android/app/src/main/res/mipmap-$DENSITY"
+            mkdir -p "$DIR"
+            sips -s format png -z "$SIZE" "$SIZE" "$ICON" --out "$DIR/ic_launcher.png" >/dev/null
+            cp "$DIR/ic_launcher.png" "$DIR/ic_launcher_round.png"
+            cp "$DIR/ic_launcher.png" "$DIR/ic_launcher_foreground.png"
+          done
       - name: Build debug APK
         script: |
           cd android
