@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useState}from'react';import{createRoot}from'react-dom/client';import{Search,Plus,Send,Settings,LogOut,Reply,Smile}from'lucide-react';import'./styles.css';import{supabase}from'./lib/supabase';
-const SAFIR_ICON='/safir-chat-icon.png';const REACTIONS=['❤️','👍','😂','😮','😢','🔥'];
+const SAFIR_ICON='/safir-chat-icon.jpg';const REACTIONS=['❤️','👍','😂','😮','😢','🔥'];
 function App(){const[session,setSession]=useState(null),[email,setEmail]=useState(''),[password,setPassword]=useState(''),[authMode,setAuthMode]=useState('signin'),[authError,setAuthError]=useState(''),[chats,setChats]=useState([]),[active,setActive]=useState(null),[text,setText]=useState(''),[messages,setMessages]=useState([]),[reactions,setReactions]=useState({}),[reply,setReply]=useState(null),[reactionFor,setReactionFor]=useState(null),[typing,setTyping]=useState(false),[search,setSearch]=useState(''),[status,setStatus]=useState('');
 useEffect(()=>{if(!supabase)return;supabase.auth.getSession().then(({data})=>setSession(data.session));const sub=supabase.auth.onAuthStateChange((_e,s)=>setSession(s)).data.subscription;return()=>sub.unsubscribe()},[]);
 async function auth(){setAuthError('');const fn=authMode==='signin'?supabase.auth.signInWithPassword:supabase.auth.signUp;const{error}=await fn({email:email.trim(),password});if(error)setAuthError(error.message)}
